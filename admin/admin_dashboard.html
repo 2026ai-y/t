@@ -607,14 +607,14 @@ document.getElementById('sortSelect').addEventListener('change', () => {
 });
 
 
+    // 알림음은 버튼을 눌렀을 때만 켜거나 끕니다.
     document.getElementById('btnEnablePendingSound')?.addEventListener('click', () => {
-      unlockPendingSound();
-      playPendingBeep();
-    });
-
-    // 브라우저 정책상 관리자 화면에서 한 번 클릭/키 입력 후 알림음이 재생됩니다.
-    ['click', 'keydown', 'touchstart'].forEach((eventName) => {
-      window.addEventListener(eventName, unlockPendingSound, { once: true });
+      if (pendingSoundUnlocked) {
+        pendingSoundUnlocked = false;
+        document.getElementById('btnEnablePendingSound').textContent = '알림음 꺼짐';
+      } else if (unlockPendingSound()) {
+        playPendingBeep();
+      }
     });
 
 checkAdmin();

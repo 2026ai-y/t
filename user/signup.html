@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="ko">
 <head>
@@ -29,9 +30,6 @@
         <label class="auth-label" for="signupPhone">전화번호</label>
         <input class="auth-input" id="signupPhone" type="text" placeholder="전화번호" autocomplete="tel" />
 
-        <label class="auth-label" for="signupBank">계좌번호</label>
-        <input class="auth-input" id="signupBank" type="text" placeholder="은행/계좌번호" autocomplete="off" />
-
         <div class="auth-actions">
           <button class="auth-btn primary" id="btnSignup" type="button">회원가입</button>
           <button class="auth-btn" id="btnBackLogin" type="button">로그인으로</button>
@@ -54,7 +52,6 @@
       const signupPw = document.getElementById('signupPw');
       const signupName = document.getElementById('signupName');
       const signupPhone = document.getElementById('signupPhone');
-      const signupBank = document.getElementById('signupBank');
       const errorBox = document.getElementById('errorBox');
       const okBox = document.getElementById('okBox');
       const btnSignup = document.getElementById('btnSignup');
@@ -80,7 +77,6 @@
         const password = (signupPw.value || '').trim();
         const name = (signupName.value || '').trim();
         const phone = (signupPhone.value || '').trim();
-        const bank = (signupBank.value || '').trim();
 
         setErr('');
         if (!username || !password) return setErr('아이디와 비밀번호는 필수입니다.');
@@ -107,7 +103,6 @@
             password_hash: password,
             name: name || null,
             phone: phone || null,
-            bank_account: bank || null,
             approved: false,
             role: 'user',
             status: '대기중',

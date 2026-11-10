@@ -615,12 +615,8 @@
           <div><div class="acct-label">휴대폰</div><div class="acct-value" id="acctPhone">-</div></div>
           <div><div class="acct-label">투자중인 금액</div><div class="acct-value" id="acctAmount">-</div></div>
           <div><div class="acct-label">수익 실현중인 금액</div><div class="acct-value" id="acctRealized">-</div></div>
-          <div><div class="acct-label">출금 계좌</div><div class="acct-value" id="acctBank">-</div></div>
         </div>
 
-        <div class="info-text" style="margin-top:12px;">
-          출금 계좌는 본인 확인 및 출금 처리 시에만 사용되며, 관리자 페이지에서만 조회·관리됩니다.
-        </div>
       </section>
 
       <!-- 설정 모달 (✅ 반드시 hidden 시작) -->
@@ -628,14 +624,12 @@
         <div class="modal">
           <div class="modal-title">내 정보 수정</div>
           <p class="section-sub" style="margin-bottom:4px;">
-            비밀번호와 출금 계좌 정보를 변경할 수 있습니다.
+            비밀번호를 변경할 수 있습니다.
           </p>
 
           <label for="editPassword">새 비밀번호</label>
           <input type="password" id="editPassword" placeholder="변경하지 않으려면 비워두세요" />
 
-          <label for="editBank">출금 계좌</label>
-          <input type="text" id="editBank" placeholder="예: 국민 123456-01-123456" />
 
           <div class="modal-actions">
             <button class="btn-secondary" id="btnCancelSettings" type="button">취소</button>
@@ -1023,14 +1017,12 @@ function renderDeltaBadge(badgeEl, delta, opts = {}) {
       const elPhone = document.getElementById('acctPhone');
       const elAmount = document.getElementById('acctAmount');
       const elRealized = document.getElementById('acctRealized');
-      const elBank = document.getElementById('acctBank');
 
       if (elName) elName.textContent = merged.name || '-';
       if (elUsername) elUsername.textContent = merged.username || '-';
       if (elPhone) elPhone.textContent = merged.phone ? maskPhone(merged.phone) : '-';
       if (elAmount) elAmount.textContent = formatAmount(merged.amount || 0);
       if (elRealized) elRealized.textContent = formatAmount(merged.realized_amount || 0);
-      if (elBank) elBank.textContent = merged.bank_account || '-';
     }
 
     /* =========================
@@ -1640,7 +1632,6 @@ alert('로그아웃 되었습니다.');
       btnOpenSettings?.addEventListener('click', () => {
         if (!settingsModal) return;
         document.getElementById('editPassword').value = '';
-        document.getElementById('editBank').value = ''; // 값은 loadStatus에서 사용자 정보 채워지니 원하면 여기서 넣어도 됨
         settingsModal.classList.remove('hidden');
       });
 
@@ -1656,11 +1647,13 @@ alert('로그아웃 되었습니다.');
       btnSaveSettings?.addEventListener('click', async () => {
         try {
           const newPw = document.getElementById('editPassword').value.trim();
-          const newBank = document.getElementById('editBank').value.trim();
 
           const payload = {};
-          if (newPw) payload.password_hash = newPw;
-          payload.bank_account = newBank || null;
+          if (!newPw) {
+            alert('변경할 비밀번호를 입력하세요.');
+            return;
+          }
+          payload.password_hash = newPw;
 
           if (!currentUserDbId) {
             alert('사용자 정보를 확인할 수 없습니다. 재조회 후 다시 시도하세요.');
@@ -1676,7 +1669,6 @@ alert('로그아웃 되었습니다.');
 
           if (error) throw error;
 
-          // localStorage user에도 bank_account 반영
           currentUser = { ...currentUser, ...data };
           localStorage.setItem('raonai_current_user', JSON.stringify(currentUser));
 
